@@ -36,9 +36,13 @@ async function gsrun(cl) {
     const gsapi = google.sheets({ version: 'v4', auth: cl });
 
 
-    const optcoordinates = {
+    const optlati = {
         spreadsheetId: '18f7rUUJ_0Vq7IJ20v4Rm_uPp75g0aXHNsjWLqNnW6Ec',
-        range: 'coordinates!B1:C90'
+        range: 'coordinates!B1:B90'
+    };
+    const optlong = {
+        spreadsheetId: '18f7rUUJ_0Vq7IJ20v4Rm_uPp75g0aXHNsjWLqNnW6Ec',
+        range: 'coordinates!C1:C90'
     };
     const opteki = {
         spreadsheetId: '18f7rUUJ_0Vq7IJ20v4Rm_uPp75g0aXHNsjWLqNnW6Ec',
@@ -47,11 +51,19 @@ async function gsrun(cl) {
 
 
     app.get('/', async function (req, res) {
-        let coordinates = await gsapi.spreadsheets.values.get(optcoordinates);
-        let dataArray = coordinates.data.values;
+        let lati = await gsapi.spreadsheets.values.get(optlati);
+        let long = await gsapi.spreadsheets.values.get(optlong);
         let eki = await gsapi.spreadsheets.values.get(opteki);
-        let ekiArray = eki.data.values;
-        res.render('index', { coordinates: dataArray ,len: dataArray.length ,eki: ekiArray});
+        let latiArray = [];
+        let longArray = [];
+        let ekiArray = [];
+        for(let i = 0 ; i < lati.data.values.length ; i++){
+            latiArray[i] = lati.data.values[i][0];
+            longArray[i] = long.data.values[i][0];
+            ekiArray[i] = eki.data.values[i][0];
+        }
+        console.log(ekiArray);
+        res.render('index', { latitude: latiArray ,longitude: longArray ,len: latiArray.length ,eki: ekiArray});
     });
 
 };

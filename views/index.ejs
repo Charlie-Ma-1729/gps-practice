@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPS</title>
 </head>
-<html>
+<html lang="zh-TW">
 <body>
 
 <p>Click the button to get your coordinates.</p>
@@ -12,12 +12,16 @@
 <button onclick="getLocation()">Try It</button>
 
 <p id="demo"></p>
-<p id="eki"></p>
+<p id="xeki"></p>
 
 
 <script>
-    var x = document.getElementById("demo");
-    var eki = document.getElementById("eki");
+    const x = document.getElementById("demo");
+    const xeki = document.getElementById("xeki");
+    const len = <%= len %> ;
+    const lati = <%- JSON.stringify(latitude) %>
+    const long = <%- JSON.stringify(longitude) %>;
+    const eki = <%- JSON.stringify(eki) %>;
 
     function getLocation() {
         if (navigator.geolocation) {
@@ -28,26 +32,26 @@
     }
 
     function showPosition(position) {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
+        let latitude = position.coords.latitude;
+        let longitude = position.coords.longitude;
         x.innerHTML = "Latitude: " + latitude +
             "<br>Longitude: " + longitude;
 
-        for (<% let i = 0 %>; <% i < len %> ; <% i++ %>) {
-            var ilatitude = <%= coordinates[i][0] %>;
-            var ilongitude = <%= coordinates[i][1] %>;
+        for (let i = 0; i < len; i++) {
+            let ilatitude = lati[i];
+            let ilongitude = long[i];
+            let ieki = eki[i];
             console.log(ilatitude);
             console.log(ilongitude);
+            console.log(ieki);
             if ((latitude + 0.003) >= ilatitude && (latitude - 0.003) <= ilatitude) {
                 if ((longitude + 0.003) >= ilongitude && (longitude - 0.003) <= ilongitude) {
-                    eki.innerHTML = "<%= eki[i] %>";
+                    xeki.innerHTML = ieki;
                     break;
                 }
             }
-            <% console.log(i) %>
         }
-        alert('done');
-
+        xeki.innerHTML = "無鄰近車站";
 
     }
 
